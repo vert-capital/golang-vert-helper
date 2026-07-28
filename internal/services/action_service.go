@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/caiofariavert/golang_vert_helper/internal/domain"
+	"github.com/vert-capital/golang-vert-helper/internal/domain"
 )
 
 // ActionService gerencia o ciclo de vida das actions

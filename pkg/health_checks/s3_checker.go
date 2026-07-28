@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 
-	"github.com/caiofariavert/golang_vert_helper/internal/domain"
+	"github.com/vert-capital/golang-vert-helper/internal/domain"
 )
 
 // S3Config contém as configurações para conexão com S3/MinIO/LocalStack

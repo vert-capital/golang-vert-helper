@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/caiofariavert/golang_vert_helper/internal/domain"
-	. "github.com/caiofariavert/golang_vert_helper/internal/repository"
-	"github.com/caiofariavert/golang_vert_helper/internal/testdb"
+	"github.com/vert-capital/golang-vert-helper/internal/domain"
+	. "github.com/vert-capital/golang-vert-helper/internal/repository"
+	"github.com/vert-capital/golang-vert-helper/internal/testdb"
 )
 
 // TestServiceRepository_Create tests creating a service

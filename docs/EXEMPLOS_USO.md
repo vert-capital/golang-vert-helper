@@ -13,8 +13,8 @@ import (
   "context"
   "log"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -115,8 +115,8 @@ import (
   "context"
   "log"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -249,7 +249,7 @@ import (
   "context"
   "database/sql"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 // ✅ Qualquer tipo que implemente interface pode ser health check
@@ -328,8 +328,8 @@ import (
   "log"
 
   "github.com/gin-gonic/gin"
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -396,7 +396,7 @@ import (
   "context"
   "testing"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 func TestExecuteWithoutKafka(t *testing.T) {
@@ -450,8 +450,8 @@ package main
 import (
   "os"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -496,8 +496,8 @@ package main
 import (
   "context"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -529,8 +529,8 @@ import (
   "context"
   "time"
 
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {
@@ -586,7 +586,7 @@ $ curl "http://localhost:8080/api/helper/v1/healthcare?force_refresh=true"
 A biblioteca é um **plugin** porque:
 
 1. **Mínimas dependências**
-   - Usuário adiciona: `import "github.com/caiofariavert/golang_vert_helper/pkg/helper"`
+   - Usuário adiciona: `import "github.com/vert-capital/golang-vert-helper/pkg/helper"`
    - Pronto!
 
 2. **Não força estrutura**

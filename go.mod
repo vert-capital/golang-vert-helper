@@ -1,4 +1,4 @@
-module github.com/caiofariavert/golang_vert_helper
+module github.com/vert-capital/golang-vert-helper
 
 go 1.25.0
 

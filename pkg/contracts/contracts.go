@@ -1,8 +1,8 @@
 package contracts
 
 import (
-	internaldomain "github.com/caiofariavert/golang_vert_helper/internal/domain"
-	internalservices "github.com/caiofariavert/golang_vert_helper/internal/services"
+	internaldomain "github.com/vert-capital/golang-vert-helper/internal/domain"
+	internalservices "github.com/vert-capital/golang-vert-helper/internal/services"
 )
 
 // Tipos de dominio expostos publicamente

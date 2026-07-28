@@ -440,8 +440,8 @@ import (
   "log"
   "time"
   
-  "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-  "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+  "github.com/vert-capital/golang-vert-helper/pkg/helper"
+  "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 func main() {

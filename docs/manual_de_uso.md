@@ -25,7 +25,7 @@ Biblioteca Go para monitoramento de saúde de serviços e execução de ações 
 ## 1. Instalação
 
 ```bash
-go get github.com/caiofariavert/golang_vert_helper
+go get github.com/vert-capital/golang-vert-helper
 ```
 
 **Pré-requisitos:**
@@ -41,7 +41,7 @@ A biblioteca recebe a conexão GORM que **você já possui** — não cria uma n
 
 ```go
 import (
-    "github.com/caiofariavert/golang_vert_helper/pkg/helper"
+    "github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 // db é sua conexão *gorm.DB existente
@@ -53,8 +53,8 @@ h := helper.New(db)
 ```go
 import (
     "log/slog"
-    "github.com/caiofariavert/golang_vert_helper/pkg/contracts"
-    "github.com/caiofariavert/golang_vert_helper/pkg/helper"
+    "github.com/vert-capital/golang-vert-helper/pkg/contracts"
+    "github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 h := helper.New(db,
@@ -83,7 +83,7 @@ Um **serviço** é qualquer dependência que você quer monitorar. Você impleme
 Quando você registra um serviço, ele é **automaticamente persistido no banco**.
 
 ```go
-import healthchecks "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+import healthchecks "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 
 // Verifica a conexão com o PostgreSQL via GORM
 h.RegisterService("postgres", healthchecks.NewGormPostgresChecker(db))
@@ -165,8 +165,8 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/caiofariavert/golang_vert_helper/pkg/contracts"
-	"github.com/caiofariavert/golang_vert_helper/pkg/helper"
+	"github.com/vert-capital/golang-vert-helper/pkg/contracts"
+	"github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 // RegisterActions registra todas as actions da aplicação
@@ -334,7 +334,7 @@ if err := h.LinkActionToService(ctx, "processar-documento", "s3"); err != nil {
 Se você preferir usar o método `Sync`:
 
 ```go
-import "github.com/caiofariavert/golang_vert_helper/pkg/contracts"
+import "github.com/vert-capital/golang-vert-helper/pkg/contracts"
 
 // Usar Sync é opcional - apenas para refresh ou em casos especiais
 err := h.Sync(ctx, []contracts.ServiceDefinition{
@@ -433,7 +433,7 @@ O `WorkerPool` permite registrar goroutines/jobs e monitorar seu estado em tempo
 ### Setup
 
 ```go
-import healthchecks "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+import healthchecks "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 
 pool := healthchecks.NewWorkerPool()
 
@@ -830,8 +830,8 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/caiofariavert/golang_vert_helper/pkg/contracts"
-	"github.com/caiofariavert/golang_vert_helper/pkg/helper"
+	"github.com/vert-capital/golang-vert-helper/pkg/contracts"
+	"github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 // RegisterActions registra todas as actions da aplicação
@@ -890,9 +890,9 @@ import (
 	"gorm.io/gorm"
 
 	"myapp/internal/actions"
-	"github.com/caiofariavert/golang_vert_helper/pkg/contracts"
-	healthchecks "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
-	"github.com/caiofariavert/golang_vert_helper/pkg/helper"
+	"github.com/vert-capital/golang-vert-helper/pkg/contracts"
+	healthchecks "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
+	"github.com/vert-capital/golang-vert-helper/pkg/helper"
 )
 
 func main() {

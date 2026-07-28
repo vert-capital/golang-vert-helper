@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/caiofariavert/golang_vert_helper/internal/adapters"
+	"github.com/vert-capital/golang-vert-helper/internal/adapters"
 )
 
 // RegisterRoutes registra todas as rotas do Vert Helper no router Gin do cliente.

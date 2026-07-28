@@ -25,7 +25,7 @@ mkdir -p migrations tests/{unit,integration}
 mkdir -p docs scripts
 
 # Inicializar módulo Go
-go mod init github.com/caiofariavert/golang_vert_helper
+go mod init github.com/vert-capital/golang-vert-helper
 go mod tidy
 ```
 
@@ -322,7 +322,7 @@ WHERE created_at < $1;
 Arquivo: `go.mod`
 
 ```go
-module github.com/caiofariavert/golang_vert_helper
+module github.com/vert-capital/golang-vert-helper
 
 go 1.21
 
@@ -418,7 +418,7 @@ Arquivo: `sqlc.yaml`
 version: "2"
 project:
   name: "vert_helper"
-  package_path: "github.com/caiofariavert/golang_vert_helper/internal/adapters/db"
+  package_path: "github.com/vert-capital/golang-vert-helper/internal/adapters/db"
 
 db:
   driver: "postgres"
@@ -1163,7 +1163,7 @@ Arquivo: `cmd/examples/with_custom_checks/main.go`
 
 ## Instalação
 
-go get github.com/caiofariavert/golang_vert_helper
+go get github.com/vert-capital/golang-vert-helper
 
 ## Quickstart
 

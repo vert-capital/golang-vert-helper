@@ -9,7 +9,7 @@ Biblioteca Go para monitoramento de saúde de serviços e execução de ações 
 ## Instalação rápida
 
 ```bash
-go get github.com/caiofariavert/golang_vert_helper
+go get github.com/vert-capital/golang-vert-helper
 ```
 
 ## Exemplo mínimo
@@ -17,8 +17,8 @@ go get github.com/caiofariavert/golang_vert_helper
 ```go
 import (
     "github.com/gin-gonic/gin"
-    "github.com/caiofariavert/golang_vert_helper/pkg/helper"
-    healthchecks "github.com/caiofariavert/golang_vert_helper/pkg/health_checks"
+    "github.com/vert-capital/golang-vert-helper/pkg/helper"
+    healthchecks "github.com/vert-capital/golang-vert-helper/pkg/health_checks"
 )
 
 h := helper.New(db)
@@ -76,5 +76,5 @@ Use os tipos publicos em `pkg/contracts` quando precisar de structs, enums e def
 Exemplo:
 
 ```go
-import "github.com/caiofariavert/golang_vert_helper/pkg/contracts"
+import "github.com/vert-capital/golang-vert-helper/pkg/contracts"
 ```
