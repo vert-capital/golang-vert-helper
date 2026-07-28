@@ -1,0 +1,65 @@
+FROM golang:1.26-bookworm AS base
+
+ENV GO111MODULE=on \
+    GOOS=linux \
+    CGO_ENABLED=1 \
+    GOPROXY=https://proxy.golang.org \
+    PATH=/usr/local/go/bin:/go/bin:${PATH}
+
+# Instala a camada de compatibilidade glibc para Alpine
+# RUN apk add --no-cache --virtual=.build-deps wget ca-certificates \
+#     && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+#     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r0/glibc-2.35-r0.apk \
+#     && apk add --force-overwrite glibc-2.35-r0.apk \
+#     && rm glibc-2.35-r0.apk
+
+# Instala dependências do sistema e o repositório da Confluent
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+    curl \
+    bash \
+    gnupg \
+    ca-certificates \
+    gcc \
+    libc-dev \
+    make \
+    libssl-dev \
+    librdkafka-dev \
+    libinput10=1.22.1-1+deb12u1 \
+    libinput-bin=1.22.1-1+deb12u1 \
+    wkhtmltopdf \
+    libtiff6 \
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala ferramentas de testes e mocks
+RUN go install gotest.tools/gotestsum@latest \
+    && go install github.com/golang/mock/mockgen@v1.6.0 \
+    && go install github.com/smartystreets/goconvey@latest
+
+ARG PROJECT_NAME="app"
+ARG VERSION="dev"
+ARG COMMIT="none"
+
+FROM base AS dev
+
+WORKDIR /app
+
+COPY . .
+
+COPY ./docker_assets/nginx.dev.conf /etc/nginx/conf.d/default.conf
+
+COPY ./health_check.sh /app/health_check.sh
+RUN chmod +x /app/health_check.sh
+
+# Instala ferramentas para desenvolvimento local
+RUN go mod download \
+    && go install github.com/go-delve/delve/cmd/dlv@latest \
+    && go install github.com/air-verse/air@latest \
+    && go install github.com/swaggo/swag/cmd/swag@latest
+
+EXPOSE 8005 2345
+
+
+CMD ["bash", "-lc", "(sleep 60; bash /app/health_check.sh || true; while true; do sleep 600; bash /app/health_check.sh || true; done) & nginx -g 'daemon off;' & /go/bin/air"]

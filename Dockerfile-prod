@@ -1,0 +1,80 @@
+FROM golang:1.26-bookworm AS builder
+
+ARG PROJECT_NAME="app"
+ARG VERSION="dev"
+ARG COMMIT="none"
+ENV CGO_ENABLED=1
+ENV GOPROXY=https://proxy.golang.org
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+    gcc \
+    libc-dev \
+    librdkafka-dev \
+    postgresql-client \
+    wkhtmltopdf \
+    libtiff6 \
+    && rm -rf /var/lib/apt/lists/
+
+WORKDIR /build
+COPY . .
+
+# Download dependencies before building
+RUN go mod download
+
+RUN go build -ldflags="-w -s \
+    -linkmode external \
+    -extldflags '-static -Wl,-z,relro,-z,now'" \
+    -o /build/app_bin .
+
+# Strip debug symbols for smaller binary
+RUN strip --strip-unneeded /build/app_bin 2>/dev/null || true
+ 
+# Create tmp directory in builder stage (will be copied to final stage)
+RUN mkdir -p /tmp && chmod 1777 /tmp
+
+
+FROM debian:bookworm-slim
+ 
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+    libinput10=1.22.1-1+deb12u1 \
+    libinput-bin=1.22.1-1+deb12u1 \
+    wkhtmltopdf \
+    libtiff6 \
+    curl\
+    nginx \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG USERNAME=nonroot
+ARG USER_UID=65532
+ARG USER_GID=65532
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && chown -R $USERNAME:$USERNAME /tmp
+ 
+# Set working directory
+WORKDIR /app
+
+COPY ./docker_assets/nginx.prd.conf /etc/nginx/conf.d/default.conf
+
+COPY ./health_check.sh /app/health_check.sh
+RUN chmod +x /app/health_check.sh
+
+USER $USERNAME
+
+COPY --from=builder --chown=nonroot:nonroot /build/app_bin /app
+COPY --from=builder --chown=nonroot:nonroot /tmp /tmp
+
+COPY --from=builder --chown=nonroot:nonroot /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Copiar arquivos de configuração
+COPY --from=builder --chown=nonroot:nonroot /build/config/ /app/config/
+
+EXPOSE 8080
+
+CMD ["bash", "-lc", "(sleep 60; bash /app/health_check.sh || true; while true; do sleep 600; bash /app/health_check.sh || true; done) & nginx & /app/app_bin"]
