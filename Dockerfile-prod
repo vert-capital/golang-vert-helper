@@ -44,8 +44,8 @@ RUN apt-get update \
     libinput-bin=1.22.1-1+deb12u1 \
     wkhtmltopdf \
     libtiff6 \
-    curl\
-    nginx \
+    curl\ # INSTALL CURL
+    nginx \ # INSTALL NGINX
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -53,17 +53,28 @@ ARG USERNAME=nonroot
 ARG USER_UID=65532
 ARG USER_GID=65532
 
+# REPLACE THIS BLOCK
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && chown -R $USERNAME:$USERNAME /tmp
+    && chown -R $USERNAME:$USERNAME /tmp \
+    && sed -i '/^user /d' /etc/nginx/nginx.conf \
+    && rm -f /etc/nginx/sites-enabled/default \
+    && mkdir -p /var/lib/nginx/body /var/log/nginx \
+    && chown -R $USERNAME:$USERNAME /var/lib/nginx /var/log/nginx /run
+# END REPLACE
  
 # Set working directory
 WORKDIR /app
 
+# COPY THIS BLOCK BEFORE USER $USERNAME
 COPY ./docker_assets/nginx.prd.conf /etc/nginx/conf.d/default.conf
-
 COPY ./health_check.sh /app/health_check.sh
-RUN chmod +x /app/health_check.sh
+RUN chmod +x /app/health_check.sh \
+    && chown $USERNAME:$USERNAME /app/health_check.sh \
+    && touch /app/health.json \
+    && chown $USERNAME:$USERNAME /app/health.json
+
+# END COPY
 
 USER $USERNAME
 
@@ -76,5 +87,5 @@ COPY --from=builder --chown=nonroot:nonroot /etc/ssl/certs/ca-certificates.crt /
 COPY --from=builder --chown=nonroot:nonroot /build/config/ /app/config/
 
 EXPOSE 8080
-
-CMD ["bash", "-lc", "(sleep 60; bash /app/health_check.sh || true; while true; do sleep 600; bash /app/health_check.sh || true; done) & nginx & /app/app_bin"]
+# REPLACE ENTRYPOINT ["/app/app_bin"] to this
+CMD ["bash", "-c", "(sleep 60; bash /app/health_check.sh || true; while true; do sleep 600; bash /app/health_check.sh || true; done) & nginx & /app/app_bin"]
