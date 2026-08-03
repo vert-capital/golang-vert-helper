@@ -81,6 +81,13 @@ func (s *AuthService) ProvisionDefaultUserFromEnv(ctx context.Context) error {
 	return s.upsertAuthUser(ctx, email, password, "Helper", true)
 }
 
+func (s *AuthService) DefaultUserFromArgs(ctx context.Context, email string, password string) error {
+	if email == "" || password == "" {
+		return fmt.Errorf("email and password must be provided")
+	}
+	return s.upsertAuthUser(ctx, email, password, "Helper", true)
+}
+
 // Authenticate valida credenciais e retorna um JWT Bearer.
 func (s *AuthService) Authenticate(ctx context.Context, email, password string) (string, *domain.AuthUser, error) {
 	normalizedEmail := strings.TrimSpace(strings.ToLower(email))
