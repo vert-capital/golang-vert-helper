@@ -3,7 +3,6 @@ package helper
 import (
 	"context"
 	"log/slog"
-	"os"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -27,7 +26,7 @@ type Helper struct {
 }
 
 // New cria um novo Helper a partir de uma conexão GORM existente
-func New(db *gorm.DB, opts ...Option) *Helper {
+func New(db *gorm.DB, helperJwtSecret string, helperJwtTtlMinutes string, opts ...Option) *Helper {
 	logger := slog.Default()
 
 	repos := adapters.NewRepositoryFactory(db)
@@ -50,7 +49,7 @@ func New(db *gorm.DB, opts ...Option) *Helper {
 		repos.GetActionExecutionRepository(),
 		logger,
 	)
-	h.authService = services.NewAuthService(db, logger, os.Getenv("HELPER_JWT_SECRET"), os.Getenv("HELPER_JWT_TTL_MINUTES"))
+	h.authService = services.NewAuthService(db, logger, helperJwtSecret, helperJwtTtlMinutes)
 	h.syncService = services.NewSyncService(
 		repos.GetServiceRepository(),
 		repos.GetActionRepository(),
@@ -69,7 +68,7 @@ func New(db *gorm.DB, opts ...Option) *Helper {
 type Option func(*Helper)
 
 // WithLogger define o logger
-func WithLogger(l *slog.Logger) Option {
+func WithLogger(l *slog.Logger, helperJwtSecret string, helperJwtTtlMinutes string) Option {
 	return func(h *Helper) {
 		h.logger = l
 		h.healthService = services.NewHealthService(
@@ -84,7 +83,7 @@ func WithLogger(l *slog.Logger) Option {
 			h.repos.GetActionExecutionRepository(),
 			l,
 		)
-		h.authService = services.NewAuthService(h.db, l, os.Getenv("HELPER_JWT_SECRET"), os.Getenv("HELPER_JWT_TTL_MINUTES"))
+		h.authService = services.NewAuthService(h.db, l, helperJwtSecret, helperJwtTtlMinutes)
 	}
 }
 
