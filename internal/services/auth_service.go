@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -17,13 +16,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/vert-capital/golang-vert-helper/internal/domain"
-)
-
-const (
-	defaultAuthEmail       = "helper@vert-capital.com"
-	defaultAuthPassword    = "Helper@123"
-	defaultJWTSecret       = "helper-jwt-secret-change-me"
-	defaultJWTTTLInMinutes = 60
 )
 
 // AuthClaims representa os claims do JWT usado nas rotas do helper.
@@ -47,24 +39,22 @@ func NewAuthService(db *gorm.DB, logger *slog.Logger) *AuthService {
 	if logger == nil {
 		logger = slog.Default()
 	}
-
-	secret := strings.TrimSpace(os.Getenv("HELPER_JWT_SECRET"))
-	if secret == "" {
-		secret = defaultJWTSecret
+	jwtKey := []byte(os.Getenv("HELPER_API_AUTH_JWT_KEY"))
+	if len(jwtKey) == 0 {
+		panic("environment variable HELPER_API_AUTH_JWT_KEY must be set")
 	}
-
-	ttlMinutes := defaultJWTTTLInMinutes
-	if raw := strings.TrimSpace(os.Getenv("HELPER_JWT_TTL_MINUTES")); raw != "" {
-		parsed, err := strconv.Atoi(raw)
-		if err == nil && parsed > 0 {
-			ttlMinutes = parsed
-		}
+	tokenTTLStr := os.Getenv("HELPER_API_AUTH_TOKEN_TTL")
+	if tokenTTLStr == "" {
+		panic("environment variable HELPER_API_AUTH_TOKEN_TTL must be set")
 	}
-
+	tokenTTL, err := time.ParseDuration(tokenTTLStr)
+	if err != nil {
+		panic(fmt.Sprintf("invalid HELPER_API_AUTH_TOKEN_TTL: %v", err))
+	}
 	return &AuthService{
 		db:       db,
-		jwtKey:   []byte(secret),
-		tokenTTL: time.Duration(ttlMinutes) * time.Minute,
+		jwtKey:   jwtKey,
+		tokenTTL: tokenTTL,
 		logger:   logger,
 	}
 }
@@ -78,12 +68,14 @@ func (s *AuthService) TokenTTL() time.Duration {
 func (s *AuthService) ProvisionDefaultUserFromEnv(ctx context.Context) error {
 	email := strings.TrimSpace(os.Getenv("HELPER_API_AUTH_EMAIL"))
 	if email == "" {
-		email = defaultAuthEmail
+		fmt.Println("HELPER_API_AUTH_EMAIL is not set, skipping default auth user provisioning")
+		return fmt.Errorf("environment variable HELPER_API_AUTH_EMAIL must be set")
 	}
 
 	password := strings.TrimSpace(os.Getenv("HELPER_API_AUTH_PASSWORD"))
 	if password == "" {
-		password = defaultAuthPassword
+		fmt.Println("HELPER_API_AUTH_PASSWORD is not set, skipping default auth user provisioning")
+		return fmt.Errorf("environment variable HELPER_API_AUTH_PASSWORD must be set")
 	}
 
 	return s.upsertAuthUser(ctx, email, password, "Helper", true)

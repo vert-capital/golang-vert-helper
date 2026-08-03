@@ -71,6 +71,17 @@ func (h *Handlers) AuthLogin(c *gin.Context) {
 	})
 }
 
+func (h *Handlers) UpdateUserPassword(c *gin.Context) {
+
+	err := h.authService.ProvisionDefaultUserFromEnv(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "password updated successfully"})
+}
+
 // ========== Health Check Handlers ==========
 
 // GetHealthcare retorna o status de saúde de todos os serviços
