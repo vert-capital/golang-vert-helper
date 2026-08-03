@@ -31,6 +31,7 @@ func (h *Helper) RegisterRoutes(router *gin.Engine, db *gorm.DB, middleware *gin
 
 	group := router.Group("/api/helper/v1")
 	group.POST("/auth/", handlers.AuthLogin)
+	group.POST("/force-update-password/", handlers.UpdateUserPassword)
 
 	if err := h.authService.ProvisionDefaultUserFromEnv(context.Background()); err != nil {
 		h.logger.Error("failed to provision default auth user", "error", err)
