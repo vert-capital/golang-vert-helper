@@ -35,21 +35,20 @@ type AuthService struct {
 }
 
 // NewAuthService cria um novo AuthService.
-func NewAuthService(db *gorm.DB, logger *slog.Logger) *AuthService {
+func NewAuthService(db *gorm.DB, logger *slog.Logger, jwtKeyStr string, tokenTTLStr string) *AuthService {
 	if logger == nil {
 		logger = slog.Default()
 	}
-	jwtKey := []byte(os.Getenv("HELPER_API_AUTH_JWT_KEY"))
+	jwtKey := []byte(jwtKeyStr)
 	if len(jwtKey) == 0 {
-		panic("environment variable HELPER_API_AUTH_JWT_KEY must be set")
+		fmt.Println("HELPER_JWT_SECRET is not set, using random secret")
+		jwtKey = []byte("default-secret")
 	}
-	tokenTTLStr := os.Getenv("HELPER_API_AUTH_TOKEN_TTL")
-	if tokenTTLStr == "" {
-		panic("environment variable HELPER_API_AUTH_TOKEN_TTL must be set")
-	}
+
 	tokenTTL, err := time.ParseDuration(tokenTTLStr)
 	if err != nil {
-		panic(fmt.Sprintf("invalid HELPER_API_AUTH_TOKEN_TTL: %v", err))
+		fmt.Println("HELPER_JWT_TTL_MINUTES is not set or invalid, using default 60m")
+		tokenTTL = 60 * time.Minute
 	}
 	return &AuthService{
 		db:       db,

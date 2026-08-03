@@ -3,6 +3,7 @@ package helper
 import (
 	"context"
 	"log/slog"
+	"os"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -49,7 +50,7 @@ func New(db *gorm.DB, opts ...Option) *Helper {
 		repos.GetActionExecutionRepository(),
 		logger,
 	)
-	h.authService = services.NewAuthService(db, logger)
+	h.authService = services.NewAuthService(db, logger, os.Getenv("HELPER_JWT_SECRET"), os.Getenv("HELPER_JWT_TTL_MINUTES"))
 	h.syncService = services.NewSyncService(
 		repos.GetServiceRepository(),
 		repos.GetActionRepository(),
@@ -83,7 +84,7 @@ func WithLogger(l *slog.Logger) Option {
 			h.repos.GetActionExecutionRepository(),
 			l,
 		)
-		h.authService = services.NewAuthService(h.db, l)
+		h.authService = services.NewAuthService(h.db, l, os.Getenv("HELPER_JWT_SECRET"), os.Getenv("HELPER_JWT_TTL_MINUTES"))
 	}
 }
 
